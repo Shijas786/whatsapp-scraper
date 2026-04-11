@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { Plus, Trash2, Edit2, Save, X, FileText, ChevronRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+import { API_URL } from '@/lib/config';
+
 export function TemplateManager() {
     const [templates, setTemplates] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
@@ -17,7 +19,7 @@ export function TemplateManager() {
     const loadTemplates = async () => {
         setLoading(true);
         try {
-            const res = await fetch('http://localhost:3001/templates');
+            const res = await fetch(`${API_URL}/templates`);
             const data = await res.json();
             setTemplates(data);
         } catch (err) {
@@ -34,7 +36,7 @@ export function TemplateManager() {
         }
 
         try {
-            const res = await fetch('http://localhost:3001/templates', {
+            const res = await fetch(`${API_URL}/templates`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(currentTemplate)
@@ -51,7 +53,7 @@ export function TemplateManager() {
     const handleDelete = async (id) => {
         if (!confirm('Are you sure you want to delete this template? 🗑️')) return;
         try {
-            await fetch(`http://localhost:3001/templates/${id}`, { method: 'DELETE' });
+            await fetch(`${API_URL}/templates/${id}`, { method: 'DELETE' });
             loadTemplates();
         } catch (err) {
             console.error('Failed to delete template:', err);

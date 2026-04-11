@@ -3,6 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import { Search, Filter, Download, Trash2, Users, Upload, X, Check, Tag, Plus, PlusCircle, MessageSquare } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_URL } from '@/lib/config';
+
 
 export function ContactsManager({ fetchContacts, deleteContact, saveContacts, onMessageContact }) {
     const [contacts, setContacts] = useState([]);
@@ -40,7 +42,7 @@ export function ContactsManager({ fetchContacts, deleteContact, saveContacts, on
     const handleAddTag = async (number) => {
         if (!tagInput.value.trim()) return;
         try {
-            const res = await fetch(`http://localhost:3001/contacts/${number}/tags`, {
+            const res = await fetch(`${API_URL}/contacts/${number}/tags`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ tag: tagInput.value.trim() })
@@ -61,7 +63,7 @@ export function ContactsManager({ fetchContacts, deleteContact, saveContacts, on
 
     const handleRemoveTag = async (number, tag) => {
         try {
-            const res = await fetch(`http://localhost:3001/contacts/${number}/tags/${tag}`, { method: 'DELETE' });
+            const res = await fetch(`${API_URL}/contacts/${number}/tags/${tag}`, { method: 'DELETE' });
             const data = await res.json();
             if (data.success) {
                 setContacts(contacts.map(c => 

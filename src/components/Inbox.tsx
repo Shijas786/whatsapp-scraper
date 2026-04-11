@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { Send, User, MessageSquare, MoreVertical, Search, Smile, Paperclip, ChevronDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_URL } from '@/lib/config';
+
 
 export function Inbox({ messages, sendMessage, initialChat = null, onChatChange = null }) {
     const [selectedChat, setSelectedChat] = useState(initialChat);
@@ -19,7 +21,7 @@ export function Inbox({ messages, sendMessage, initialChat = null, onChatChange 
     const loadActiveChats = async () => {
         try {
             setLoadingChats(true);
-            const res = await fetch('http://localhost:3001/chats');
+            const res = await fetch(`${API_URL}/chats`);
             const data = await res.json();
             setActiveChats(data);
         } catch (err) {
@@ -44,8 +46,8 @@ export function Inbox({ messages, sendMessage, initialChat = null, onChatChange 
         const loadInitialData = async () => {
             try {
                 const [contactsRes, templatesRes] = await Promise.all([
-                    fetch('http://localhost:3001/contacts'),
-                    fetch('http://localhost:3001/templates')
+                    fetch(`${API_URL}/contacts`),
+                    fetch(`${API_URL}/templates`)
                 ]);
                 setContacts(await contactsRes.json());
                 setTemplates(await templatesRes.json());
@@ -63,7 +65,7 @@ export function Inbox({ messages, sendMessage, initialChat = null, onChatChange 
             if (!selectedChat || history[selectedChat]) return;
             try {
                 setLoadingHistory(true);
-                const res = await fetch(`http://localhost:3001/chats/${selectedChat}/messages`);
+                const res = await fetch(`${API_URL}/chats/${selectedChat}/messages`);
                 const data = await res.json();
                 setHistory(prev => ({ ...prev, [selectedChat]: data }));
             } catch (err) {

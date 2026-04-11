@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { Send, Play, Pause, MessageSquare, Timer, Target, Paperclip, FileText, ChevronDown, X, Users, Filter, Search, CheckCircle2, AlertCircle, Trash2, ArrowRight, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { API_URL } from '@/lib/config';
+
 
 export function MassMessenger({ contacts: initialContacts = [], sendMessage }) {
     const [step, setStep] = useState(1); // 1: Audience, 2: Compose, 3: Blast
@@ -53,8 +55,8 @@ export function MassMessenger({ contacts: initialContacts = [], sendMessage }) {
         const loadData = async () => {
             try {
                 const [cRes, tRes] = await Promise.all([
-                    fetch('http://localhost:3001/contacts'),
-                    fetch('http://localhost:3001/templates')
+                    fetch(`${API_URL}/contacts`),
+                    fetch(`${API_URL}/templates`)
                 ]);
                 const cData = await cRes.json();
                 const tData = await tRes.json();
@@ -112,7 +114,7 @@ export function MassMessenger({ contacts: initialContacts = [], sendMessage }) {
         const formData = new FormData();
         formData.append('file', file);
         try {
-            const res = await fetch('http://localhost:3001/upload', { method: 'POST', body: formData });
+            const res = await fetch(`${API_URL}/upload`, { method: 'POST', body: formData });
             const data = await res.json();
             setSelectedMedia(data);
         } catch (err) {
