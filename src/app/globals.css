@@ -1,26 +1,123 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #fdfdfd;
+  --foreground: #1e293b;
+  --primary: #25d366;
+  --primary-hover: #128c7e;
+  --secondary: #e2e8f0;
+  --accent: #ffcc00;
+  --card-bg: #ffffff;
+  --border-doodle: 255px 15px 225px 15px/15px 225px 15px 255px;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Outfit', sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .playful-card {
+    background: var(--card-bg);
+    border: 2px solid var(--foreground);
+    border-radius: 12px;
+    box-shadow: 4px 4px 0px 0px rgba(0,0,0,0.1);
+    transition: all 0.2s ease;
+  }
+
+  .playful-card:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px 0px rgba(0,0,0,0.15);
+  }
+
+  .doodle-border {
+    border: 2px solid var(--foreground);
+    border-radius: var(--border-doodle);
+  }
+
+  .btn-playful {
+    background: var(--primary);
+    color: white;
+    font-weight: 700;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid var(--foreground);
+    border-radius: 12px;
+    box-shadow: 3px 3px 0px 0px rgba(0,0,0,1);
+    transition: all 0.1s active;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .btn-playful:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+    background: var(--primary-hover);
+  }
+
+  .btn-playful:active {
+    transform: translate(2px, 2px);
+    box-shadow: 1px 1px 0px 0px rgba(0,0,0,1);
+  }
+
+  .nav-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-slate-600;
+  }
+
+  .nav-link:hover {
+    @apply bg-slate-100 text-slate-900;
+  }
+
+  .nav-link.active {
+    background: var(--primary);
+    color: white;
+    border: 2px solid var(--foreground);
+    box-shadow: 3px 3px 0px 0px rgba(0,0,0,1);
+  }
+
+  .input-playful {
+    background: white;
+    border: 2px solid var(--foreground);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    outline: none;
+    transition: all 0.2s;
+  }
+
+  .input-playful:focus {
+    box-shadow: 3px 3px 0px 0px var(--primary);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Glassmorphism replacement for light theme */
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  border: 2px solid var(--foreground);
+  border-radius: 16px;
+  box-shadow: 5px 5px 0px 0px rgba(0,0,0,0.05);
 }
