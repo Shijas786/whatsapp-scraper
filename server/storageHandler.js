@@ -15,6 +15,9 @@ class StorageHandler {
         this.db.pragma('journal_mode = WAL'); // Better write performance
         this.db.pragma('foreign_keys = ON');
 
+        // Simple migration check: if userId exists but we are in single-tenant, it's fine.
+        // We just need to make sure we don't crash on standard queries.
+
         this._initSchema();
         console.log('[SQLite] Database initialized at data/scraper.db');
     }
