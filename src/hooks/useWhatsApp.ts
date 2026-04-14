@@ -97,6 +97,11 @@ export function useWhatsApp() {
         return res.json();
     };
 
+    const logout = async () => {
+        const res = await fetch(`${API_URL}/logout`, { method: 'POST' });
+        return res.json();
+    };
+
     return {
         status,
         qr,
@@ -108,6 +113,7 @@ export function useWhatsApp() {
         sendMessage,
         deleteContact,
         fetchStats,
+        logout,
         isConnected: status === 'CONNECTED'
     };
 }

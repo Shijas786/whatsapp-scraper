@@ -1,8 +1,8 @@
 'use client';
 
-import { Users, Send, Settings, ShieldCheck, Activity, MessageSquare, Database, LayoutDashboard } from 'lucide-react';
+import { Users, Send, Settings, ShieldCheck, Activity, MessageSquare, Database, LayoutDashboard, LogOut, RefreshCw } from 'lucide-react';
 
-export function Layout({ children, activeTab, setActiveTab, isConnected }) {
+export function Layout({ children, activeTab, setActiveTab, isConnected, logout }) {
     return (
         <div className="min-h-screen bg-[#fdfdfd] flex text-slate-800">
             {/* Sidebar */}
@@ -66,6 +66,18 @@ export function Layout({ children, activeTab, setActiveTab, isConnected }) {
                 </nav>
 
                 <div className="mt-auto pt-8 border-t-2 border-slate-100 space-y-4">
+                    <button 
+                        onClick={async () => {
+                            if (confirm('Are you sure you want to reset the session? You will need to scan the QR again.')) {
+                                await logout();
+                                window.location.reload();
+                            }
+                        }}
+                        className="w-full nav-link text-red-600 hover:bg-red-50 hover:border-red-600 transition-colors group"
+                    >
+                        <LogOut className="w-5 h-5 group-hover:rotate-12 transition-transform" />
+                        Reset Session
+                    </button>
                     <button className="w-full nav-link hover:bg-slate-50 transition-colors">
                         <Settings className="w-5 h-5" />
                         Settings

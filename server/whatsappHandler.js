@@ -110,13 +110,19 @@ class WhatsAppHandler {
                 this.io.emit('status', { status: this.status, message: msg });
             });
 
-            this.client.on('disconnected', (reason) => {
+            this.client.on('disconnected', async (reason) => {
                 console.log('Disconnected from WhatsApp:', reason);
                 this.status = 'DISCONNECTED';
                 this.io.emit('status', { status: this.status, message: reason });
-                // Attempt re-initialization
-                console.log('Attempting to re-initialize...');
-                this.client.initialize().catch(err => console.error('Re-init error:', err));
+                
+                // Hard reset on disconnect to ensure QR redrawing
+                console.log('Attempting to re-initialize after clean-up...');
+                try {
+                    await this.client.destroy();
+                } catch (e) {
+                    console.error('Error destroying client on disconnect:', e);
+                }
+                this.initialize();
             });
 
             console.log('Calling client.initialize()...');
@@ -128,6 +134,37 @@ class WhatsAppHandler {
         } catch (error) {
             console.error('Constructor error:', error);
         }
+    }
+
+    async logout() {
+        console.log('Logging out and clearing session...');
+        this.status = 'DISCONNECTED';
+        this.qr = '';
+        this.io.emit('status', { status: this.status, qr: '' });
+
+        if (this.client) {
+            try {
+                await this.client.logout();
+                await this.client.destroy();
+            } catch (err) {
+                console.error('Error during client logout/destroy:', err);
+            }
+        }
+
+        // Force delete session directory
+        const sessionPath = path.join(process.cwd(), 'sessions');
+        if (fs.existsSync(sessionPath)) {
+            try {
+                fs.rmSync(sessionPath, { recursive: true, force: true });
+                console.log('Session directory cleared');
+            } catch (err) {
+                console.error('Failed to clear session directory:', err);
+            }
+        }
+
+        this.client = null;
+        // Re-initialize to show new QR
+        this.initialize();
     }
 
     getStatus() {

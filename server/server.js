@@ -168,6 +168,15 @@ app.post('/templates', (req, res) => {
     res.json({ success: true, template });
 });
 
+app.post('/logout', async (req, res) => {
+    try {
+        await handler.logout();
+        res.json({ success: true });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 app.delete('/templates/:id', (req, res) => {
     const success = storage.deleteTemplate(req.params.id);
     res.json({ success });

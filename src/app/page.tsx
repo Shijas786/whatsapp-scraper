@@ -17,7 +17,7 @@ export default function Dashboard() {
     const { 
         status, qr, isConnected, messages, 
         fetchGroups, fetchParticipants, fetchContacts, saveContacts, sendMessage,
-        deleteContact, fetchStats
+        deleteContact, fetchStats, logout
     } = useWhatsApp();
     
     const [scrapedContacts, setScrapedContacts] = useState([]);
@@ -131,7 +131,12 @@ export default function Dashboard() {
     };
 
     return (
-        <Layout activeTab={activeTab} setActiveTab={setActiveTab} isConnected={isConnected}>
+        <Layout 
+            activeTab={activeTab} 
+            setActiveTab={setActiveTab} 
+            isConnected={isConnected}
+            logout={logout}
+        >
             <AnimatePresence mode="wait">
                 {!isConnected ? (
                     <motion.div
