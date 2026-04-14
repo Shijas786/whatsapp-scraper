@@ -2,9 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { io } from 'socket.io-client';
-
-const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001';
-
+import { API_URL } from '@/lib/config';
 
 export function useWhatsApp() {
     const [status, setStatus] = useState('DISCONNECTED');
@@ -14,7 +12,12 @@ export function useWhatsApp() {
     const [messages, setMessages] = useState([]);
 
     useEffect(() => {
-        const newSocket = io(SOCKET_URL);
+        // Use production-grade transports and error handling
+        const newSocket = io(API_URL, {
+            transports: ['websocket', 'polling'],
+            reconnectionAttempts: 10,
+            reconnectionDelay: 1000,
+        });
         setSocket(newSocket);
 
         newSocket.on('connect', () => {
@@ -32,7 +35,7 @@ export function useWhatsApp() {
         });
 
         // Initial status fetch
-        fetch(`${SOCKET_URL}/status`)
+        fetch(`${API_URL}/status`)
             .then(res => res.json())
             .then(data => {
                 setStatus(data.status);
@@ -41,7 +44,7 @@ export function useWhatsApp() {
             .catch(err => console.error('Error fetching status:', err));
 
         // Initial messages fetch
-        fetch(`${SOCKET_URL}/messages`)
+        fetch(`${API_URL}/messages`)
             .then(res => res.json())
             .then(data => setMessages(data))
             .catch(err => console.error('Error fetching messages:', err));
@@ -50,34 +53,34 @@ export function useWhatsApp() {
     }, []);
 
     const fetchGroups = async () => {
-        const res = await fetch(`${SOCKET_URL}/groups`);
+        const res = await fetch(`${API_URL}/groups`);
         return res.json();
     };
 
     const fetchParticipants = async (groupId) => {
-        const res = await fetch(`${SOCKET_URL}/groups/${groupId}/participants`);
+        const res = await fetch(`${API_URL}/groups/${groupId}/participants`);
         return res.json();
     };
 
     const fetchContacts = async () => {
-        const res = await fetch(`${SOCKET_URL}/contacts`);
+        const res = await fetch(`${API_URL}/contacts`);
         return res.json();
     };
 
     const deleteContact = async (number) => {
-        const res = await fetch(`${SOCKET_URL}/contacts/${encodeURIComponent(number)}`, {
+        const res = await fetch(`${API_URL}/contacts/${encodeURIComponent(number)}`, {
             method: 'DELETE'
         });
         return res.json();
     };
 
     const fetchStats = async () => {
-        const res = await fetch(`${SOCKET_URL}/stats`);
+        const res = await fetch(`${API_URL}/stats`);
         return res.json();
     };
 
     const saveContacts = async (contacts, source = 'Scraper') => {
-        const res = await fetch(`${SOCKET_URL}/contacts`, {
+        const res = await fetch(`${API_URL}/contacts`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ contacts, source })
@@ -86,7 +89,7 @@ export function useWhatsApp() {
     };
 
     const sendMessage = async (number, message, force = false, mediaPath = null) => {
-        const res = await fetch(`${SOCKET_URL}/send-message`, {
+        const res = await fetch(`${API_URL}/send-message`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ number, message, force, mediaPath })
